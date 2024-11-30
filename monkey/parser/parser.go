@@ -5,6 +5,7 @@ import (
 	"Go_Interpreter/monkey/lexer"
 	"Go_Interpreter/monkey/token"
 	"fmt"
+	"go/token"
 	"strconv"
 )
 const (
@@ -27,6 +28,7 @@ var precedences = map[token.TokenType]int{
 	token.MINUS:    SUM,
 	token.SLASH:	PRODUCT,
 	token.ASTERISK: PRODUCT,
+	token.LPAREN:	CALL,
 }
 
 type Parser struct {
@@ -67,6 +69,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
 	p.registerPrefix(token.FUNCTION, p.parseFunctionLiteral)
+	p.registerPrefix(token.LPAREN, p.parseCallExpression)
 
 	p.nextToken()
 	p.nextToken()
@@ -399,4 +402,33 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 		}
 
 		return identifiers
+}
+func (p *Pasrer) parseCallExpression(function ast.Expression)	ast.Expression {
+	exp := &ast.CAllExpression{Token: p.curToken, Function: function}
+	exp.Arguments = p.parseCallArguments()
+	retrun exp
+}
+
+func (p *Parser) parseCallArguments() []ast.Expression {
+	args := []ast.Expression{}
+
+	if p.peekTokenIs(token.RPAREN) {
+		p.enextToken()
+		return args
+	}
+
+	p.nextToken()
+	args = append(args, p.parseExpression(LOWEST))
+
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+		args = append(args, p.parseExpression(LOWEST))
+	}
+
+	if !p.expectPEEK(token.RPAREN) {
+		return nil
+	}
+
+	return args
 }
