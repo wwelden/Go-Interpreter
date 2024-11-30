@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"go/token"
 	"strconv"
+	"text/template/parse"
 )
 const (
 	_ int = iota
@@ -147,12 +148,13 @@ func (p *Parser) parseLetStatement() *ast.LetStatment {
 		return nil
 	}
 
-	//TODO:
+	p.nextToken()
 
-	for !p.curTokenIs(token.SEMICOLON) {
+	stmt.Value = p.parseExpression(LOWEST)
+
+	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
-
 	return stmt
 }
 
@@ -179,12 +181,9 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
 	p.nextToken()
 
-	//TODO
-
-	for !p.curTokenIs(token.SEMICOLON) {
+	if p.peekTokenIs(token.SEMICOLON){
 		p.nextToken()
 	}
-
 	return stmt
 }
 
