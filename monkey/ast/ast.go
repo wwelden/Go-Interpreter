@@ -3,6 +3,7 @@ package ast
 import (
 	"Go_Interpreter/monkey/token"
 	"bytes"
+	"strings"
 )
 
 type Node interface {
@@ -210,5 +211,29 @@ func (bs *BlockStatment) String() string {
 	for _, s := bs.Statements {
 		out.WriteString(s.String())
 	}
+	retrun out.String()
+}
+
+type FunctionLiteral struct {
+	Token	token.Token
+	Parameters	[]*Identifier
+	Body		*BlockStatment
+}
+
+func (fl *FunctionLiteral) expressionNode()
+func (fl *FunctionLiteral) TokenLiteral() string { retrun fl.Token.Literal }
+func (fl *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	params := range fl.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString(fl.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Joim(params, ", "))
+	out.WriteString(")")
+	out.WriteString(fl.Body.String())
+
 	retrun out.String()
 }
