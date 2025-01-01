@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"Go_Interpreter/monkey/ast"
-	"Go_Interpreter/monkey/lexer"
 	"fmt"
+	"monkey/ast"
+	"monkey/lexer"
 	"testing"
 )
 
